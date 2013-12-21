@@ -25,42 +25,18 @@ module.exports = {
   "Movie":{
     "id":"Movie",
     "properties":{
-      // "tags":{
-      //   "items":{
-      //     "$ref":"Tag"
-      //   },
-      //   "type":"Array"
-      // },
       "id":{
+        "type":"integer"
+      },
+      "title":{
         "type":"string"
       },
-      // "category":{
-      //   "items": {
-      //     "$ref":"Category"
-      //   }
-      // },
-      // "status":{
-      //   "allowableValues":{
-      //     "valueType":"LIST",
-      //     "values":[
-      //       "available",
-      //       "pending",
-      //       "sold"
-      //     ],
-      //     "valueType":"LIST"
-      //   },
-      //   "description":"movie status in the store",
-      //   "type":"string"
-      // },
-      "name":{
+      "released":{
+        "type":"integer"
+      },
+      "tagline":{
         "type":"string"
       }
-      // "photoUrls":{
-      //   "items":{
-      //     "type":"string"
-      //   },
-      //   "type":"Array"
-      // }
     }
   },
   "Person":{
@@ -72,9 +48,6 @@ module.exports = {
       },
       "name":{
         "type":"string"
-      },
-      "created":{
-        "type":"number"
       }
     }
   },

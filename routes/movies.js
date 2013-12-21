@@ -167,7 +167,7 @@ exports.findById = {
     "summary" : "Find movie by ID",
     "method": "GET",
     "params" : [
-      param.path("id", "ID of movie that needs to be fetched", "string")
+      param.path("id", "ID of movie that needs to be fetched", "integer")
     ],
     "responseClass" : "Movie",
     "errorResponses" : [swe.invalid('id'), swe.notFound('movie')],
@@ -196,6 +196,123 @@ exports.findById = {
 
   }
 };
+
+exports.findByTitle = {
+  'spec': {
+    "description" : "Find a movie",
+    "path" : "/movies/title/{title}",
+    "notes" : "Returns a movie based on title",
+    "summary" : "Find movie by title",
+    "method": "GET",
+    "params" : [
+      param.path("title", "Title of movie that needs to be fetched", "string")
+    ],
+    "responseClass" : "Movie",
+    "errorResponses" : [swe.invalid('title'), swe.notFound('movie')],
+    "nickname" : "getMovieByTitle"
+  },
+  'action': function (req,res) {
+    var title = req.params.title;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+    var start = new Date();
+
+    if (!title) throw swe.invalid('title');
+
+    var params = {
+      title: title
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('movie');
+      writeResponse(res, response, start);
+    };
+
+
+    Movies.getByTitle(params, options, callback);
+
+  }
+};
+
+exports.findMoviesByDateRange = {
+  'spec': {
+    "description" : "Find movies",
+    "path" : "/movies/daterange/{start}/{end}",
+    "notes" : "Returns movies between a year range",
+    "summary" : "Find movie by year range",
+    "method": "GET",
+    "params" : [
+      param.path("start", "Year that the movie was released on or after", "integer"),
+      param.path("end", "Year that the movie was released before", "integer")
+    ],
+    "responseClass" : "Movie",
+    "errorResponses" : [swe.invalid('start'), swe.invalid('end'), swe.notFound('movie')],
+    "nickname" : "getMoviesByDateRange"
+  },
+  'action': function (req,res) {
+    var start = req.params.start;
+    var end = req.params.end;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+
+    if (!start) throw swe.invalid('start');
+    if (!end) throw swe.invalid('end');
+
+    var params = {
+      start: start,
+      end: end
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('movie');
+      writeResponse(res, response, new Date());
+    };
+
+
+    Movies.getByDateRange(params, options, callback);
+
+  }
+};
+
+exports.findMoviesByActor = {
+  'spec': {
+    "description" : "Find movies",
+    "path" : "/movies/actor/{name}",
+    "notes" : "Returns movies that a person acted in",
+    "summary" : "Find movies by actor",
+    "method": "GET",
+    "params" : [
+      param.path("name", "Name of the actor who acted in movies", "string")
+    ],
+    "responseClass" : "Movie",
+    "errorResponses" : [swe.invalid('name'), swe.notFound('movie')],
+    "nickname" : "getMoviesByActor"
+  },
+  'action': function (req,res) {
+    var name = req.params.name;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+
+    if (!name) throw swe.invalid('name');
+
+    var params = {
+      name: name
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('movie');
+      writeResponse(res, response, new Date());
+    };
+
+
+    Movies.getByActor(params, options, callback);
+
+  }
+};
+
 
 exports.getRandom = {
   'spec': {

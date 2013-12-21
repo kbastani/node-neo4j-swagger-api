@@ -136,6 +136,22 @@ var _matchBy = function (keys, params, options, callback) {
   callback(null, query, cypher_params);
 };
 
+
+
+var _getDirectorByMovie = function (params, options, callback) {
+  var cypher_params = {
+    title: params.title
+  };
+
+  var query = [
+    'MATCH (movie:Movie {title: {title}})',
+    'MATCH (person)-[:DIRECTED]->(movie)', 
+    'RETURN DISTINCT person'
+  ].join('\n');
+
+  callback(null, query, cypher_params);
+};
+
 var _matchByUUID = _.partial(_matchBy, ['id']);
 var _matchByName = _.partial(_matchBy, ['name']);
 var _matchAll = _.partial(_matchBy, []);
@@ -391,6 +407,9 @@ var getById = Cypher(_matchByUUID, _singlePerson);
 // get a single person by name
 var getByName = Cypher(_matchByName, _singlePerson);
 
+// Get a director of a movie
+var getDirectorByMovie = Cypher(_getDirectorByMovie, _singlePerson);
+
 // get n random people
 var getRandom = Cypher(_getRandom, _manyPersons);
 
@@ -532,10 +551,5 @@ var resetPersons = function (params, options, callback) {
 module.exports = {
   getById: getById,
   getByName: getByName,
-  getRandom: getRandom,
-  getAll: getAll,
-  getAllCount: getAllCount,
-  deletePerson: deletePerson,
-  deleteAllPersons: deleteAllPersons,
-  resetPersons: resetPersons
+  getDirectorByMovie: getDirectorByMovie
 };

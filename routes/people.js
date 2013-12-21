@@ -71,6 +71,44 @@ exports.list = {
   }
 };
 
+exports.findPersonByDirectedMovie = {
+  'spec': {
+    "description" : "Find a director",
+    "path" : "/people/director/movie/{title}",
+    "notes" : "Returns a person who directed a movie",
+    "summary" : "Find person who directed a movie by title",
+    "method": "GET",
+    "params" : [
+      param.path("title", "Title of the movie that the person directed", "string")
+    ],
+    "responseClass" : "Person",
+    "errorResponses" : [swe.invalid('title'), swe.notFound('person')],
+    "nickname" : "getPersonByDirectedMovie"
+  },
+  'action': function (req,res) {
+    var title = req.params.title;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+    var start = new Date();
+
+    if (!title) throw swe.invalid('title');
+
+    var params = {
+      title: title
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('person');
+      writeResponse(res, response, start);
+    };
+
+
+    People.getDirectorByMovie(params, options, callback);
+
+  }
+};
+
 exports.personCount = {
   'spec': {
     "description" : "Person count",

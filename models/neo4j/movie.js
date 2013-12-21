@@ -6,6 +6,7 @@ var Movie = module.exports = function (_node) {
   _(this).extend(_node.data);
 };
 
+
 Movie.prototype.actors = function (actors) {
   if (actors && actors.length) {
     this.actors = actors;
@@ -13,12 +14,12 @@ Movie.prototype.actors = function (actors) {
   return this.actors;
 };
 
-Movie.prototype.directors = function (directors) {
-  if (directors && directors.length) {
-    this.directors = directors;
-  }
-  return this.directors;
-};
+// Movie.prototype.directors = function (directors) {
+//   if (directors && directors.length) {
+//     this.directors = directors;
+//   }
+//   return this.directors;
+// };
 
 // Movie.prototype.category = function (category) {
 //   if (category) {
