@@ -10,7 +10,7 @@ var categories = {
   3: {id: 3, name: "Rabbits"},
   4: {id: 4, name: "Lions"}};
 
-var pets = {
+var movies = {
   1: {id: 1,
       category: categories[2],
       name: "Cat 1",
@@ -74,47 +74,47 @@ var pets = {
 };
 
 
-exports.getPetById = function getPetById(id) {
-  return pets[id];
+exports.getMovieById = function getMovieById(id) {
+  return movies[id];
 };
 
 
-exports.findPetByStatus = function findPetByStatus(status) {
+exports.findMovieByStatus = function findMovieByStatus(status) {
   var keys = {}
   var array = status.split(",");
     array.forEach(function(item) {
       keys[item] = item;
     });
   var output = [];
-  for(var key in pets) {
-    var pet = pets[key];
-    if(pet.status && keys[pet.status]) output.push(pet);
+  for(var key in movies) {
+    var movie = movies[key];
+    if(movie.status && keys[movie.status]) output.push(movie);
   }
   return output;
 };
 
-exports.findPetByTags = function findPetByTags(tags) {
+exports.findMovieByTags = function findMovieByTags(tags) {
   var keys = {};
   var array = tags.split(",");
   array.forEach(function(item) {
     keys[item] = item;
   });
   var output = [];
-  for(var key in pets) {
-    var pet = pets[key];
-    if(pet.tags) {
-      pet.tags.forEach(function (tag) {
-        if(tag.name && keys[tag.name]) output.push(pet);
+  for(var key in movies) {
+    var movie = movies[key];
+    if(movie.tags) {
+      movie.tags.forEach(function (tag) {
+        if(tag.name && keys[tag.name]) output.push(movie);
       });
     }
   }
   return output;
 };
 
-exports.addPet = function addPet(pet){
-  pets[pet.id] = pet;
+exports.addMovie = function addMovie(movie){
+  movies[movie.id] = movie;
 };
 
-exports.deletePet = function deletePet(id) {
-  delete pets[id];
+exports.deleteMovie = function deleteMovie(id) {
+  delete movies[id];
 };

@@ -3,23 +3,12 @@ module.exports = {
     "id":"Envelope",
     "properties":{
       "response":[
-        "User",
-        "Pet",
-        "List[User]",
-        "List[Pet]",
+        "Person",
+        "Movie",
+        "List[Person]",
+        "List[Movie]",
       ],
       "responseTime":"integer",
-      "name":{
-        "type":"string"
-      }
-    }
-  },
-  "Category":{
-    "id":"Category",
-    "properties":{
-      "id":{
-        "type":"string"
-      },
       "name":{
         "type":"string"
       }
@@ -33,8 +22,8 @@ module.exports = {
       }
     }
   },
-  "Pet":{
-    "id":"Pet",
+  "Movie":{
+    "id":"Movie",
     "properties":{
       // "tags":{
       //   "items":{
@@ -60,7 +49,7 @@ module.exports = {
       //     ],
       //     "valueType":"LIST"
       //   },
-      //   "description":"pet status in the store",
+      //   "description":"movie status in the store",
       //   "type":"string"
       // },
       "name":{
@@ -74,8 +63,8 @@ module.exports = {
       // }
     }
   },
-  "User":{
-    "id":"User",
+  "Person":{
+    "id":"Person",
     // "required": ["id"],
     "properties":{
       "id":{
@@ -89,23 +78,12 @@ module.exports = {
       }
     }
   },
-  "newUser":{
-    "id":"newUser",
+  "newPerson":{
+    "id":"newPerson",
     "required": ["name"],
     "properties":{
       "name":{
         "type":"string",
-      }
-    }
-  },
-  "Tag":{
-    "id":"Tag",
-    "properties":{
-      "id":{
-        "type":"long"
-      },
-      "name":{
-        "type":"string"
       }
     }
   }

@@ -84,20 +84,23 @@ var models = require("./models/swagger_models");
 
 // Add models and methods to swagger
 swagger.addModels(models)
-  .addGet(routes.users.list)
-  .addGet(routes.users.userCount)
-  .addGet(routes.users.findById)
-  .addGet(routes.users.getRandom)
-  .addPost(routes.users.addUser)
-  .addPost(routes.users.addRandomUsers)
-  .addPost(routes.users.manyRandomFriendships)
-  .addPost(routes.users.friendRandomUser)
-  .addPost(routes.users.friendUser)
-  .addPost(routes.users.unfriendUser)
-  .addPut(routes.users.updateUser)
-  .addDelete(routes.users.deleteUser)
-  .addDelete(routes.users.deleteAllUsers)
-  .addPut(routes.users.resetUsers)
+.addGet(routes.people.list)
+.addGet(routes.movies.list)
+.addGet(routes.movies.movieCount)
+.addGet(routes.movies.findById)
+  // .addGet(routes.people.userCount)
+  // .addGet(routes.people.findById)
+  // .addGet(routes.people.getRandom)
+  // .addPost(routes.people.addUser)
+  // .addPost(routes.people.addRandomUsers)
+  // .addPost(routes.people.manyRandomFriendships)
+  // .addPost(routes.people.friendRandomUser)
+  // .addPost(routes.people.friendUser)
+  // .addPost(routes.people.unfriendUser)
+  // .addPut(routes.people.updateUser)
+  // .addDelete(routes.people.deleteUser)
+  // .addDelete(routes.people.deleteAllUsers)
+  // .addPut(routes.people.resetUsers)
 
   // .addGet(routes.pets.findByTags)
   // .addGet(routes.pets.findByStatus)
@@ -133,14 +136,14 @@ app.get('/', function(req, res) {
   res.redirect('./docs');
 });
 
-// app.get('/users', routes.users.list);
-// app.post('/users', routes.users.create);
-// app.get('/users/:id', routes.users.show);
-// app.post('/users/:id', routes.users.edit);
-// app.del('/users/:id', routes.users.del);
+// app.get('/people', routes.people.list);
+// app.post('/people', routes.people.create);
+// app.get('/people/:id', routes.people.show);
+// app.post('/people/:id', routes.people.edit);
+// app.del('/people/:id', routes.people.del);
 
-// app.post('/users/:id/follow', routes.users.follow);
-// app.post('/users/:id/unfollow', routes.users.unfollow);
+// app.post('/people/:id/follow', routes.people.follow);
+// app.post('/people/:id/unfollow', routes.people.unfollow);
 
 
 app.listen(app.get('port'), function() {
