@@ -2,7 +2,8 @@
 
 
 var neo4j = require('neo4j'),
-    db = new neo4j.GraphDatabase(process.env.NEO4J_URL || 'http://localhost:7474'),
+    db = new neo4j.GraphDatabase('http://neo4jmovies:RzHvs2tyE8EtbyNWnse4@neo4jmovies.sb01.stations.graphenedb.com:24789/'),
+    //db = new neo4j.GraphDatabase('http://localhost:7474/'),
     _ = require('underscore')
 ;
 

@@ -7,12 +7,56 @@ var Movie = module.exports = function (_node) {
 };
 
 
-Movie.prototype.actors = function (actors) {
-  if (actors && actors.length) {
-    this.actors = actors;
+Movie.prototype.genres = function (genre) {
+    if (genre) {
+    if (genre.name) {
+      this.genre = genre;
+    } else if (genre.data) {
+      this.genre = _.extend(genre.data);
+    }
   }
-  return this.actors;
+  return this.genre;
 };
+
+Movie.prototype.director = function (director) {
+    if (director) {
+    if (director.name) {
+      this.director = director;
+    } else if (director.data) {
+      this.director = _.extend(director.data);
+    }
+  }
+  return this.director;
+};
+
+Movie.prototype.writer = function (writer) {
+    if (writer) {
+    if (writer.name) {
+      this.writer = writer;
+    } else if (writer.data) {
+      this.writer = _.extend(writer.data);
+    }
+  }
+  return this.writer;
+};
+
+Movie.prototype.actors = function (actor) {
+    if (actor) {
+    if (actor.name) {
+      this.actor = actor;
+    } else if (actor.data) {
+      this.actor = _.extend(actor.data);
+    }
+  }
+  return this.actor;
+};
+
+// Movie.prototype.roles = function (roles) {
+//   if (roles && roles.length) {
+//     this.roles = roles;
+//   }
+//   return this.roles;
+// };
 
 // Movie.prototype.directors = function (directors) {
 //   if (directors && directors.length) {
@@ -21,13 +65,13 @@ Movie.prototype.actors = function (actors) {
 //   return this.directors;
 // };
 
-// Movie.prototype.category = function (category) {
-//   if (category) {
-//     if (category.name) {
-//       this.category = category;
-//     } else if (category.data) {
-//       this.category = _.extend(category.data);
+// Movie.prototype.genre = function (genre) {
+//   if (genre) {
+//     if (genre.name) {
+//       this.genre = genre;
+//     } else if (genre.data) {
+//       this.genre = _.extend(genre.data);
 //     }
 //   }
-//   return this.category;
+//   return this.genre;
 // };

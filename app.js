@@ -12,10 +12,12 @@ var express     = require('express')
 
   , PORT        = process.env.PORT || 3000
   , API_STRING  = '/api/v0'
-  , BASE_URL    = process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
+  , BASE_URL    = 'http://neo4jmovies.azurewebsites.net' //process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
 
   , app         = express()
   , subpath     = express();
+
+  //'http://neo4jmovies.azurewebsites.net' 
 
 
 app.use(API_STRING, subpath);
@@ -91,7 +93,10 @@ swagger.addModels(models)
 .addGet(routes.movies.findByTitle)
 .addGet(routes.movies.findMoviesByDateRange)
 .addGet(routes.movies.findMoviesByActor)
+.addGet(routes.movies.findByGenre)
 .addGet(routes.people.findPersonByDirectedMovie)
+.addGet(routes.people.findActorsByCoActor)
+.addGet(routes.people.findRolesByMovie)
   // .addGet(routes.people.userCount)
   // .addGet(routes.people.findById)
   // .addGet(routes.people.getRandom)

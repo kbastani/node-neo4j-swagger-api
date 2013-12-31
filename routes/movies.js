@@ -224,13 +224,45 @@ exports.findByTitle = {
       title: title
     };
 
-    var callback = function (err, response) {
-      if (err) throw swe.notFound('movie');
-      writeResponse(res, response, start);
+    Movies.getByTitle(params, options, function (err, response) {
+        if (err) throw swe.notFound('movies');
+        writeResponse(res, response, start);
+      });
+
+  }
+};
+
+exports.findByGenre = {
+  'spec': {
+    "description" : "Find a movie",
+    "path" : "/movies/genre/{name}",
+    "notes" : "Returns movies based on genre",
+    "summary" : "Find movie by genre",
+    "method": "GET",
+    "params" : [
+      param.path("name", "The name of the genre", "string")
+    ],
+    "responseClass" : "Movie",
+    "errorResponses" : [swe.invalid('name'), swe.notFound('movie')],
+    "nickname" : "getMoviesByGenre"
+  },
+  'action': function (req,res) {
+    var name = req.params.name;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+    var start = new Date();
+
+    if (!name) throw swe.invalid('name');
+
+    var params = {
+      name: name
     };
 
-
-    Movies.getByTitle(params, options, callback);
+    Movies.getByGenre(params, options, function (err, response) {
+        if (err) throw swe.notFound('movies');
+        writeResponse(res, response, start);
+      });
 
   }
 };

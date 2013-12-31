@@ -109,6 +109,80 @@ exports.findPersonByDirectedMovie = {
   }
 };
 
+exports.findActorsByCoActor = {
+  'spec': {
+    "description" : "Find co-actors of person",
+    "path" : "/people/coactors/person/{name}",
+    "notes" : "Returns all people that acted in a movie with a person",
+    "summary" : "Find all people that acted in a movie with a person",
+    "method": "GET",
+    "params" : [
+      param.path("name", "Name of the person with co-actors", "string")
+    ],
+    "responseClass" : "List[Person]",
+    "errorResponses" : [swe.notFound('people')],
+    "nickname" : "getCoActorsOfPerson"
+  },
+  'action': function (req, res) {
+    var name = req.params.name;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+    var start = new Date();
+
+    if (!name) throw swe.invalid('name');
+
+    var params = {
+      name: name
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('person');
+      writeResponse(res, response, start);
+    };
+
+
+    People.getCoActorsByPerson(params, options, callback);
+  }
+};
+
+exports.findRolesByMovie = {
+  'spec': {
+    "description" : "Find people with a role in a movie",
+    "path" : "/people/roles/movie/{title}",
+    "notes" : "Returns all people and their role in a movie",
+    "summary" : "Find all people and their role in a movie",
+    "method": "GET",
+    "params" : [
+      param.path("title", "Title of the movie", "string")
+    ],
+    "responseClass" : "List[Role]",
+    "errorResponses" : [swe.notFound('roles')],
+    "nickname" : "getRolesByMovie"
+  },
+  'action': function (req, res) {
+    var title = req.params.title;
+    var options = {
+      neo4j: parseBool(req, 'neo4j')
+    };
+    var start = new Date();
+
+    if (!title) throw swe.invalid('title');
+
+    var params = {
+      title: title
+    };
+
+    var callback = function (err, response) {
+      if (err) throw swe.notFound('role');
+      writeResponse(res, response, start);
+    };
+
+
+    People.getRolesByMovie(params, options, callback);
+  }
+};
+
 exports.personCount = {
   'spec': {
     "description" : "Person count",

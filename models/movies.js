@@ -39,10 +39,34 @@ var _singleMovie = function (results, callback) {
   }
 };
 
+var _singleMovieWithGenres = function (results, callback) {
+    if (results.length)
+    {
+      var thisMovie = new Movie(results[0].movie);
+      thisMovie.genres = results[0].genres;
+      thisMovie.director = results[0].director;
+      thisMovie.writer = results[0].writer;
+      thisMovie.actors = results[0].actors;
+      callback(null, thisMovie);
+    } else {
+      callback(null, null);
+    }
+};
+
 // return many movies
 var _manyMovies = function (results, callback) {
   var movies = _.map(results, function (result) {
     return new Movie(result.movie);
+  });
+
+  callback(null, movies);
+};
+
+var _manyMoviesWithGenres = function (results, callback) {
+  var movies = _.map(results, function (result) {
+    var thisMovie = new Movie(result.movie);
+    thisMovie.genres = result.genres;
+    return thisMovie;
   });
 
   callback(null, movies);
@@ -108,6 +132,49 @@ var _getByDateRange = function (params, options, callback) {
   callback(null, query, cypher_params);
 };
 
+var _getMoviesWithGenres = function (params, options, callback) {
+  var cypher_params = {};
+  var query = [
+    'MATCH (movie:Movie)',
+    'WITH movie',
+    'OPTIONAL MATCH (genre)<-[:HAS_GENRE]-(movie)',
+    'WITH movie, genre', 
+    'RETURN movie, collect(genre.name) as genres'
+  ].join('\n');
+
+  callback(null, query, cypher_params);
+};
+
+var _getMovieByTitle = function (params, options, callback) {
+  var cypher_params = {
+    title: params.title
+  };
+  var query = [
+    'MATCH (movie:Movie {title: {title} })',
+    'MATCH (genre)<-[:HAS_GENRE]-(movie)',
+    'MATCH (director)-[:DIRECTED]->(movie)',
+    'MATCH (actor)-[:ACTED_IN]->(movie)',
+    'OPTIONAL MATCH (writer)-[:WRITER_OF]->(movie)',
+    'RETURN movie, collect(DISTINCT genre.name) as genres, collect(DISTINCT actor.name) as actors, director.name as director, writer.name as writer'
+  ].join('\n');
+
+  callback(null, query, cypher_params);
+};
+
+var _matchByGenre = function (params, options, callback) {
+  var cypher_params = {
+    name: params.name
+  };
+
+  var query = [
+    'MATCH (movie:Movie)-[:HAS_GENRE]->(genre)',
+    'WHERE genre.name = {name}',
+    'RETURN movie'
+  ].join('\n');
+
+  callback(null, query, cypher_params);
+};
+
 var _getByActor = function (params, options, callback) {
   var cypher_params = {
     name: params.name
@@ -123,11 +190,11 @@ var _getByActor = function (params, options, callback) {
 };
 
 
-
-
 var _matchByUUID = Cypher(_matchById, ['id']);
-var _matchByTitle = _.partial(_matchBy, ['title']);
+var _matchByTitle = Cypher(_getMovieByTitle, _singleMovieWithGenres);
+
 var _matchAll = _.partial(_matchBy, []);
+
 
 // gets n random movies
 var _getRandom = function (params, options, callback) {
@@ -230,10 +297,15 @@ var getByDateRange = Cypher(_getByDateRange, _manyMovies);
 var getByActor = Cypher(_getByActor, _manyMovies);
 
 // get a single movie by name
-var getByTitle = Cypher(_matchByTitle, _singleMovie);
+var getByTitle = Cypher(_getMovieByTitle, _singleMovieWithGenres);
 
 // get a movie by id and update their name
 var updateName = Cypher(_updateName, _singleMovie);
+
+// get a movie by genre
+var getByGenre = Cypher(_matchByGenre, _manyMovies);
+
+var getManyMoviesWithGenres = Cypher(_getMoviesWithGenres, _manyMoviesWithGenres);
 
 // create a new movie
 var create = Cypher(_create, _singleMovie);
@@ -297,9 +369,10 @@ var resetMovies = function (params, options, callback) {
 // export exposed functions
 
 module.exports = {
-  getAll: getAll,
+  getAll: getManyMoviesWithGenres,
   getById: getById,
   getByTitle: getByTitle,
   getByDateRange: getByDateRange,
-  getByActor: getByActor
+  getByActor: getByActor,
+  getByGenre: getByGenre
 };
