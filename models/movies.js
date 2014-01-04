@@ -44,9 +44,11 @@ var _singleMovieWithGenres = function (results, callback) {
     {
       var thisMovie = new Movie(results[0].movie);
       thisMovie.genres = results[0].genres;
-      thisMovie.director = results[0].director;
+      thisMovie.directors = results[0].directors;
       thisMovie.writer = results[0].writer;
       thisMovie.actors = results[0].actors;
+      thisMovie.related = results[0].related;
+      thisMovie.keywords = results[0].keywords;
       callback(null, thisMovie);
     } else {
       callback(null, null);
@@ -154,8 +156,18 @@ var _getMovieByTitle = function (params, options, callback) {
     'MATCH (genre)<-[:HAS_GENRE]-(movie)',
     'MATCH (director)-[:DIRECTED]->(movie)',
     'MATCH (actor)-[:ACTED_IN]->(movie)',
-    'OPTIONAL MATCH (writer)-[:WRITER_OF]->(movie)',
-    'RETURN movie, collect(DISTINCT genre.name) as genres, collect(DISTINCT actor.name) as actors, director.name as director, writer.name as writer'
+    'MATCH (writer)-[:WRITER_OF]->(movie)',
+    'MATCH (movie)-[:HAS_KEYWORD]->(keyword)<-[:HAS_KEYWORD]-(movies:Movie)',
+    'WITH DISTINCT movies.title as related, count(DISTINCT keyword) as weight, movie, collect(DISTINCT genre.name) as genres, collect(DISTINCT director.name) as directors, collect(DISTINCT actor.name) as actors, writer',
+    'ORDER BY weight DESC',
+    'LIMIT 7',
+    'WITH movie, collect(DISTINCT { related: related, weight: weight }) as related, actors, genres, directors, writer.name as writer',
+    'MATCH (movie)-[:HAS_KEYWORD]->(keyword:Keyword)<-[:HAS_KEYWORD]-(movies)',
+    'WITH keyword.name as keyword, count(movies) as keyword_weight, movie, related, actors, genres, directors, writer',
+    'ORDER BY keyword_weight',
+    'WITH keyword, movie, related, actors, genres, directors, writer',
+    'LIMIT 10',
+    'RETURN collect(DISTINCT keyword) as keywords, movie, actors, related, genres, directors, writer'
   ].join('\n');
 
   callback(null, query, cypher_params);
