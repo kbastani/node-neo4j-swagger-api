@@ -271,35 +271,31 @@ exports.addRandomPeople = {
 };
 
 
-exports.findById = {
+exports.findByName = {
   'spec': {
     "description" : "find a person",
-    "path" : "/people/{id}",
-    "notes" : "Returns a person based on ID",
-    "summary" : "Find person by ID",
+    "path" : "/people/name/{name}",
+    "notes" : "Returns a person based on name",
+    "summary" : "Find person by name",
     "method": "GET",
     "params" : [
-      param.path("id", "ID of person that needs to be fetched", "string"),
-      param.query("friends", "Include friends", "boolean", false, false, "LIST[true, false]", "true"),
-      param.query("fof", "Include friends of friends", "boolean", false, false, "LIST[true, false]")
+      param.path("name", "Name of person that needs to be fetched", "string")
     ],
     "responseClass" : "Person",
-    "errorResponses" : [swe.invalid('id'), swe.notFound('person')],
-    "nickname" : "getPersonById"
+    "errorResponses" : [swe.invalid('name'), swe.notFound('person')],
+    "nickname" : "getPersonByName"
   },
   'action': function (req,res) {
-    var id = req.params.id;
+    var name = req.params.name;
     var options = {
       neo4j: parseBool(req, 'neo4j')
     };
     var start = new Date();
-    var friends = parseBool(req, 'friends');
-    var fof = parseBool(req, 'fof');
 
-    if (!id) throw swe.invalid('id');
+    if (!name) throw swe.invalid('name');
 
     var params = {
-      id: id
+      name: name
     };
 
     var callback = function (err, response) {
@@ -307,17 +303,7 @@ exports.findById = {
       writeResponse(res, response, start);
     };
 
-    if (friends) {
-      if (fof) {
-        People.getWithFriendsAndFOF(params, options, callback);
-      } else {
-        People.getWithFriends(params, options, callback);
-      }
-    } else if (fof) {
-      People.getWithFOF(params, options, callback);
-    } else {
-      People.getById(params, options, callback);
-    }
+    People.getByName(params, options, callback);
   }
 };
 

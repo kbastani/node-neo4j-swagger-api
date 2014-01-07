@@ -6,12 +6,12 @@ var Person = module.exports = function (_node) {
   _(this).extend(_node.data);
 };
 
-Person.prototype.movies = function (movies) {
-  if (movies && movies.length) {
-    this.movies = movies;
-  }
-  return this.movies;
-};
+// Person.prototype.movies = function (movies) {
+//   if (movies && movies.length) {
+//     this.movies = movies;
+//   }
+//   return this.movies;
+// };
 
 
 

@@ -34,7 +34,10 @@ function _randomNames (n) {
 // return a single person
 var _singlePerson = function (results, callback) {
   if (results.length) {
-    callback(null, new Person(results[0].person));
+    var person = new Person(results[0].person);
+    person.movies = results[0].movie;
+    person.related = results[0].related;
+    callback(null, person);
   } else {
     callback(null, null);
   }
@@ -134,9 +137,26 @@ var _getRolesByMovie = function (params, options, callback) {
   callback(null, query, cypher_params);
 };
 
+var _getViewByName = function (params, options, callback) {
+  var cypher_params = {
+    name: params.name
+  };
+
+  var query = [
+    'MATCH (person:Person {name: {name}})',
+    'MATCH (person:Person)-[relatedTo]-(movie:Movie)', 
+    'OPTIONAL MATCH (person)-[:ACTED_IN]->(movies)<-[:ACTED_IN]-(people)',
+    'WITH DISTINCT people.name as related, count(DISTINCT movies) as weight, movie, person',
+    'ORDER BY weight DESC',
+    'RETURN collect(DISTINCT movie.title) as movie, collect(DISTINCT { related: related, weight: weight }) as related, person'
+  ].join('\n');
+
+  callback(null, query, cypher_params);
+};
+
+
 
 var _matchByUUID = _.partial(_matchBy, ['id']);
-var _matchByName = _.partial(_matchBy, ['name']);
 var _matchAll = _.partial(_matchBy, []);
 
 // gets n random people
@@ -230,7 +250,7 @@ var _deleteAll = function (params, options, callback) {
 var getById = Cypher(_matchByUUID, _singlePerson);
 
 // get a single person by name
-var getByName = Cypher(_matchByName, _singlePerson);
+var getByName = Cypher(_getViewByName, _singlePerson);
 
 // Get a director of a movie
 var getDirectorByMovie = Cypher(_getDirectorByMovie, _singlePerson);

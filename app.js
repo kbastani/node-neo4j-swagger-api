@@ -12,7 +12,7 @@ var express     = require('express')
 
   , PORT        = process.env.PORT || 3000
   , API_STRING  = '/api/v0'
-  , BASE_URL    = 'http://movieapi-neo4j.herokuapp.com' //process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
+  , BASE_URL    = process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
 
   , app         = express()
   , subpath     = express();
@@ -97,6 +97,7 @@ swagger.addModels(models)
 .addGet(routes.people.findPersonByDirectedMovie)
 .addGet(routes.people.findActorsByCoActor)
 .addGet(routes.people.findRolesByMovie)
+.addGet(routes.people.findByName)
   // .addGet(routes.people.userCount)
   // .addGet(routes.people.findById)
   // .addGet(routes.people.getRandom)
