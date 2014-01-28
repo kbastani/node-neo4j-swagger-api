@@ -146,9 +146,9 @@ var _getViewByName = function (params, options, callback) {
     'MATCH (person:Person {name: {name}})',
     'MATCH (person:Person)-[relatedTo]-(movie:Movie)', 
     'OPTIONAL MATCH (person)-[:ACTED_IN]->(movies)<-[:ACTED_IN]-(people)',
-    'WITH DISTINCT people.name as related, count(DISTINCT movies) as weight, movie, person',
+    'WITH DISTINCT { name: people.name, poster_image: people.poster_image } as related, count(DISTINCT movies) as weight, movie, person',
     'ORDER BY weight DESC',
-    'RETURN collect(DISTINCT movie.title) as movie, collect(DISTINCT { related: related, weight: weight }) as related, person'
+    'RETURN collect(DISTINCT { title: movie.title, poster_image: movie.poster_image }) as movie, collect(DISTINCT { related: related, weight: weight }) as related, person'
   ].join('\n');
 
   callback(null, query, cypher_params);

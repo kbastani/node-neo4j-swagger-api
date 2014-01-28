@@ -45,7 +45,7 @@ var _singleMovieWithGenres = function (results, callback) {
       var thisMovie = new Movie(results[0].movie);
       thisMovie.genres = results[0].genres;
       thisMovie.directors = results[0].directors;
-      thisMovie.writer = results[0].writer;
+      thisMovie.writers = results[0].writers;
       thisMovie.actors = results[0].actors;
       thisMovie.related = results[0].related;
       thisMovie.keywords = results[0].keywords;
@@ -141,7 +141,8 @@ var _getMoviesWithGenres = function (params, options, callback) {
     'WITH movie',
     'OPTIONAL MATCH (genre)<-[:HAS_GENRE]-(movie)',
     'WITH movie, genre', 
-    'RETURN movie, collect(genre.name) as genres'
+    'RETURN movie, collect(genre.name) as genres',
+    'ORDER BY movie.released DESC'
   ].join('\n');
 
   callback(null, query, cypher_params);
@@ -152,22 +153,24 @@ var _getMovieByTitle = function (params, options, callback) {
     title: params.title
   };
   var query = [
-    'MATCH (movie:Movie {title: {title} })',
-    'MATCH (genre)<-[:HAS_GENRE]-(movie)',
+    'MATCH (movie:Movie {title: {title} })<-[:ACTED_IN]-(actor)',
+    'WITH movie, actor, length((actor)-[:ACTED_IN]->()) as actormoviesweight',
+    'ORDER BY actormoviesweight DESC',
+    'WITH movie, collect({name: actor.name, poster_image: actor.poster_image, weight: actormoviesweight}) as actors', 
+    'MATCH (movie)-[:HAS_GENRE]->(genre)',
+    'WITH movie, actors, collect(genre.name) as genres',
     'MATCH (director)-[:DIRECTED]->(movie)',
-    'MATCH (actor)-[:ACTED_IN]->(movie)',
+    'WITH movie, actors, genres, collect(director.name) as directors',
     'MATCH (writer)-[:WRITER_OF]->(movie)',
+    'WITH movie, actors, genres, directors, collect(writer.name) as writers',
     'MATCH (movie)-[:HAS_KEYWORD]->(keyword)<-[:HAS_KEYWORD]-(movies:Movie)',
-    'WITH DISTINCT movies.title as related, count(DISTINCT keyword) as weight, movie, collect(DISTINCT genre.name) as genres, collect(DISTINCT director.name) as directors, collect(DISTINCT actor.name) as actors, writer',
-    'ORDER BY weight DESC',
-    'LIMIT 7',
-    'WITH movie, collect(DISTINCT { related: related, weight: weight }) as related, actors, genres, directors, writer.name as writer',
-    'MATCH (movie)-[:HAS_KEYWORD]->(keyword:Keyword)<-[:HAS_KEYWORD]-(movies)',
-    'WITH keyword.name as keyword, count(movies) as keyword_weight, movie, related, actors, genres, directors, writer',
-    'ORDER BY keyword_weight',
-    'WITH keyword, movie, related, actors, genres, directors, writer',
+    'WITH DISTINCT movies as related, count(DISTINCT keyword.name) as keywords, movie, genres, directors, actors, writers',
+    'ORDER BY keywords DESC',
+    'WITH collect(DISTINCT { related: { title: related.title, poster_image: related.poster_image }, weight: keywords }) as related, movie, actors, genres, directors, writers',
+    'MATCH (movie)-[:HAS_KEYWORD]->(keyword)',
+    'WITH keyword, related, movie, actors, genres, directors, writers',
     'LIMIT 10',
-    'RETURN collect(DISTINCT keyword) as keywords, movie, actors, related, genres, directors, writer'
+    'RETURN collect(keyword.name) as keywords, related, movie, actors, genres, directors, writers'
   ].join('\n');
 
   callback(null, query, cypher_params);

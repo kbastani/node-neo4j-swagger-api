@@ -3,5 +3,5 @@
 var _ = require('underscore');
 
 var Role = module.exports = function (_node) {
-  _(this).extend(_node.role);
+  _(this).extend(_node.data);
 };

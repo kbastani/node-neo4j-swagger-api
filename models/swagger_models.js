@@ -22,23 +22,6 @@ module.exports = {
       }
     }
   },
-  "Role":{
-    "id":"Role",
-    "properties":{
-      "id":{
-        "type":"integer"
-      },
-      "movietitle":{
-        "type":"string"
-      },
-      "roletype":{
-        "type":"string"
-      },
-      "name":{
-        "type":"string"
-      }
-    }
-  },
   "Movie":{
     "id":"Movie",
     "properties":{
@@ -65,15 +48,6 @@ module.exports = {
       },
       "name":{
         "type":"string"
-      }
-    }
-  },
-  "newPerson":{
-    "id":"newPerson",
-    "required": ["name"],
-    "properties":{
-      "name":{
-        "type":"string",
       }
     }
   }

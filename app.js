@@ -5,20 +5,13 @@
 var express     = require('express')
   , url         = require("url")
   , swagger     = require("swagger-node-express")
-  // , http        = require('http')
-  // , path        = require('path')
-
   , routes      = require('./routes')
-
   , PORT        = process.env.PORT || 3000
   , API_STRING  = '/api/v0'
-  , BASE_URL    = process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
-
+  , BASE_URL    = 'http://movieapi-neo4j.herokuapp.com' 
+  //process.env.BASE_URL || process.env.BASE_CALLBACK_URL || "http://localhost:"+PORT
   , app         = express()
   , subpath     = express();
-
-  //'http://neo4jmovies.azurewebsites.net' 
-
 
 app.use(API_STRING, subpath);
 
@@ -26,34 +19,22 @@ app.use(API_STRING, subpath);
 subpath.configure(function () {
   // just using json for the api
   subpath.use(express.json());
-
   subpath.use(express.methodOverride());
 });
 
 app.configure(function () {
   // all environments
   app.set('port', PORT);
-  // app.set('views', __dirname + '/views');
-  // app.set('view engine', 'jade');
   app.use(express.favicon());
-  // app.use(express.static(path.join(__dirname, 'public')));
   app.use(express.logger('dev'));
-
   // just using json for the api
   app.use(express.json());
-
   app.use(express.methodOverride());
   app.use(app.router);
-
-
   // development only
   if ('development' == app.get('env')) {
     app.use(express.errorHandler());
   }
-
-  // app.locals({
-  //   title: 'node-neo4j-swagger-api'    // default title
-  // });
 });
 
 
@@ -97,28 +78,7 @@ swagger.addModels(models)
 .addGet(routes.people.findPersonByDirectedMovie)
 .addGet(routes.people.findActorsByCoActor)
 .addGet(routes.people.findRolesByMovie)
-.addGet(routes.people.findByName)
-  // .addGet(routes.people.userCount)
-  // .addGet(routes.people.findById)
-  // .addGet(routes.people.getRandom)
-  // .addPost(routes.people.addUser)
-  // .addPost(routes.people.addRandomUsers)
-  // .addPost(routes.people.manyRandomFriendships)
-  // .addPost(routes.people.friendRandomUser)
-  // .addPost(routes.people.friendUser)
-  // .addPost(routes.people.unfriendUser)
-  // .addPut(routes.people.updateUser)
-  // .addDelete(routes.people.deleteUser)
-  // .addDelete(routes.people.deleteAllUsers)
-  // .addPut(routes.people.resetUsers)
-
-  // .addGet(routes.pets.findByTags)
-  // .addGet(routes.pets.findByStatus)
-  // .addGet(routes.pets.findById)
-  // .addPost(routes.pets.addPet)
-  // .addPut(routes.pets.updatePet)
-  // .addDelete(routes.pets.deletePet)
-  ;
+.addGet(routes.people.findByName);
 
 
 // Configures the app's base path and api version.
@@ -131,7 +91,8 @@ swagger.configure(BASE_URL+API_STRING, "0.0.10");
 // Serve up swagger ui at /docs via static route
 var docs_handler = express.static(__dirname + '/node_modules/neo4j-swagger-ui/dist/');
 app.get(/^\/docs(\/.*)?$/, function(req, res, next) {
-  if (req.url === '/docs') { // express static barfs on root url w/o trailing slash
+  if (req.url === '/docs') { 
+    // express static barfs on root url w/o trailing slash
     res.writeHead(302, { 'Location' : req.url + '/' });
     res.end();
     return;
@@ -145,16 +106,6 @@ app.get(/^\/docs(\/.*)?$/, function(req, res, next) {
 app.get('/', function(req, res) {
   res.redirect('./docs');
 });
-
-// app.get('/people', routes.people.list);
-// app.post('/people', routes.people.create);
-// app.get('/people/:id', routes.people.show);
-// app.post('/people/:id', routes.people.edit);
-// app.del('/people/:id', routes.people.del);
-
-// app.post('/people/:id/follow', routes.people.follow);
-// app.post('/people/:id/unfollow', routes.people.unfollow);
-
 
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));

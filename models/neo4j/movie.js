@@ -50,28 +50,3 @@ Movie.prototype.actors = function (actor) {
   }
   return this.actor;
 };
-
-// Movie.prototype.roles = function (roles) {
-//   if (roles && roles.length) {
-//     this.roles = roles;
-//   }
-//   return this.roles;
-// };
-
-// Movie.prototype.directors = function (directors) {
-//   if (directors && directors.length) {
-//     this.directors = directors;
-//   }
-//   return this.directors;
-// };
-
-// Movie.prototype.genre = function (genre) {
-//   if (genre) {
-//     if (genre.name) {
-//       this.genre = genre;
-//     } else if (genre.data) {
-//       this.genre = _.extend(genre.data);
-//     }
-//   }
-//   return this.genre;
-// };
